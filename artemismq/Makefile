@@ -1,4 +1,4 @@
-ARTEMIS_VERSION=2.18.0
+ARTEMIS_VERSION=2.22.0
 IMAGE_OWNER=saulocn
 
 build:
@@ -7,7 +7,7 @@ build:
 push: push-version push-latest
 
 push-latest:
-	docker push saulocn/artemismq:${ARTEMIS_VERSION}
+	docker push ${IMAGE_OWNER}/artemismq:${ARTEMIS_VERSION}
 
 push-version:
-	docker push saulocn/artemismq:${ARTEMIS_VERSION}
+	docker push ${IMAGE_OWNER}/artemismq:${ARTEMIS_VERSION}

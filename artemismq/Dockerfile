@@ -1,7 +1,7 @@
-FROM openjdk:11
+FROM openjdk:17-alpine
 
-ARG ARTEMIS_VERSION=2.18.0
-ARG ARTEMIS_SHA1=3619d514a9f48547c2c36ff25a3bb5ede34b9219
+ARG ARTEMIS_VERSION=2.22.0
+ARG ARTEMIS_SHA1=25409b33c0065eeef9ed24fa1974223767676fef
 
 
 ENV ARTEMIS_VERSION $ARTEMIS_VERSION
@@ -11,18 +11,22 @@ RUN mkdir /artemis
 
 WORKDIR /artemis
 
-RUN apt-get update
-RUN apt-get -y upgrade
+RUN cat /proc/version
 
-RUN apt-get -y install libaio1
+RUN apk update && apk upgrade
 
-RUN curl -O https://repository.apache.org/content/repositories/releases/org/apache/activemq/apache-artemis/$ARTEMIS_VERSION/apache-artemis-$ARTEMIS_VERSION-bin.tar.gz 
-RUN sha1sum apache-artemis-$ARTEMIS_VERSION-bin.tar.gz | grep $ARTEMIS_SHA1 
-RUN mv apache-artemis-$ARTEMIS_VERSION-bin.tar.gz artemis.tar.gz
+RUN apk --no-cach add libaio curl
+
+RUN curl -O https://repository.apache.org/content/repositories/releases/org/apache/activemq/apache-artemis/${ARTEMIS_VERSION}/apache-artemis-${ARTEMIS_VERSION}-bin.tar.gz 
+RUN sha1sum apache-artemis-${ARTEMIS_VERSION}-bin.tar.gz | grep ${ARTEMIS_SHA1} 
+RUN mv apache-artemis-${ARTEMIS_VERSION}-bin.tar.gz artemis.tar.gz
 RUN tar -xf ./artemis.tar.gz
-RUN ln -s /artemis/apache-artemis-$ARTEMIS_VERSION/ ./current
+RUN ln -s /artemis/apache-artemis-${ARTEMIS_VERSION}/ ./current
 
 COPY artemis.sh artemis.sh
+
+RUN ls 
+RUN pwd
 
 RUN chmod 337 artemis.sh
 
@@ -41,5 +45,4 @@ EXPOSE 8161 \
     #STOMP
     61613
 
-
-ENTRYPOINT /artemis/artemis.sh
+CMD [ "/bin/sh", "/artemis/artemis.sh" ]
