@@ -1,0 +1,19 @@
+# Mover para o Docker do wildfly
+echo INFO: Adding microprofile subsystems.
+
+if (outcome != success) of /subsystem=microprofile-health-smallrye:read-resource
+  /extension=org.wildfly.extension.microprofile.health-smallrye:add
+  /subsystem=microprofile-health-smallrye:add(security-enabled=false)
+else
+  echo INFO: microprofile-health-smallrye already in configuration, subsystem not added.
+end-if
+
+if (outcome != success) of /subsystem=microprofile-fault-tolerance-smallrye:read-resource
+  /extension=org.wildfly.extension.microprofile.fault-tolerance-smallrye:add
+  /subsystem=microprofile-fault-tolerance-smallrye:add
+else
+  echo INFO: microprofile-fault-tolerance-smallrye already in configuration, subsystem not added.
+end-if
+
+# Add Potgres module 
+module add --name=org.postgres --slot=main  --resources=postgresql-POSTGRES_DRIVER_VERSION.jar  --dependencies=javax.api,javax.transaction.api
